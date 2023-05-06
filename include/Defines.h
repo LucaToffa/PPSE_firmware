@@ -1,12 +1,13 @@
 #ifndef __DEFINES__
 #define __DEFINES__
 
-//GPIO Pin mapping
-#define LED_ALIVE 20
+//GPIO Pin mapping   
+#define LED_ALIVE 20 
+#define LED_RP 25
 #define LED_STRIP 13
 
-#define SDA 0
-#define SCL 1
+#define SDA 0 
+#define SCL 1 
 
 #define USB_ID 2
 #define USB_OUT_EN 27
@@ -43,13 +44,17 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define SCREEN_ADDRESS 0x3C //oled file to control it
+#define NUM_PAGES 11 //number of pages in the oled screen tbd
 #define EEPROM_ADDRESS 0x50 //hopefully, already defined in the library
 #define ACC_ADDRESS 0x00
 #define STRIP_LENGHT 8
+
 //add functin to scan i2c devices
 //INCLUDES
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_SSD1306.h> //find a way to make it work
+#include "OLED_screen.h"
+
 #include "Debounce.h"
 #include <ezBuzzer.h>
 #include "AT24C256.h"

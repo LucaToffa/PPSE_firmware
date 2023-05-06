@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  This is an example for our Monochrome OLEDs based on SSD1306 drivers
 
  Pick one up today in the adafruit shop!
@@ -36,17 +36,59 @@ void example_temperature();
 void example_battery();
 void example_buzzer();
 
-
 //void setup_peripherals();
 void setup() {
   // put your setup code here, to run once:
+  pinMode(LED_RP, OUTPUT);
+  digitalWrite(LED_RP, HIGH);
+  delay(1000);
+  digitalWrite(LED_RP, LOW);
+  delay(1000);
+
   pixels.begin();
-  example_adc();
+  //example_adc();
+  Serial.begin(9600);
+
+  init_display();
+  
+  testdrawline();      // Draw many lines
+
+  testdrawrect();      // Draw rectangles (outlines)
+
+  testfillrect();      // Draw rectangles (filled)
+
+  testdrawcircle();    // Draw circles (outlines)
+
+  testfillcircle();    // Draw circles (filled)
+
+  testdrawroundrect(); // Draw rounded rectangles (outlines)
+
+  testfillroundrect(); // Draw rounded rectangles (filled)
+
+  testdrawtriangle();  // Draw triangles (outlines)
+
+  testfilltriangle();  // Draw triangles (filled)
+
+  testdrawchar();      // Draw characters of the default font
+
+  testdrawstyles();    // Draw 'stylized' characters
+
+  testscrolltext();    // Draw scrolling text
+
+  testdrawbitmap();    // Draw a small bitmap image
+
+  // Invert and restore display, pausing in-between
+  display.invertDisplay(true);
+  delay(1000);
+  display.invertDisplay(false);
+  delay(1000);
+
+  testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  example_led_strip();
+  
   //switch case for the peripherals
   switch(Peripherals_state){
     case MAIN_MENU:
@@ -115,6 +157,3 @@ void example_adc(){
   sleep_ms(500);
   }
 }
-
-
-//trying to get the oled to work
