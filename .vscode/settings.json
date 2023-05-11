@@ -1,4 +1,8 @@
 {
     "workbench.editor.enablePreviewFromCodeNavigation": true,
-    "workbench.editor.enablePreviewFromQuickOpen": true
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "files.associations": {
+        "defines.h": "c",
+        "*.x": "cpp"
+    }
 }

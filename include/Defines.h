@@ -54,24 +54,16 @@
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_SSD1306.h> //find a way to make it work
 #include "OLED_screen.h"
+//#include "GPS.h"
+//#include "Accelerometer.h"
 
 #include "Debounce.h"
 #include <ezBuzzer.h>
 #include "AT24C256.h"
 //#include <WiFi.h> //which library for wifi over uart?
 
-//GLOBAL VARIABLES
-Adafruit_NeoPixel pixels(STRIP_LENGHT, LED_STRIP, NEO_GRB + NEO_KHZ800); //strip file to control it
 
-Debounce ButtonUp(BUTTON_UP); //button class for combination readings, usable for every peripheral
-Debounce ButtonDown(BUTTON_DOWN);
-Debounce ButtonRight(BUTTON_RIGHT);
-Debounce ButtonLeft(BUTTON_LEFT);
-
-
-ezBuzzer Buzzer(BUZZER);
-
-AT24C256 eeprom = AT24C256();
+#include "buzzer.h"
 
 enum Peripheral_state{
     MAIN_MENU,
@@ -87,12 +79,29 @@ enum Peripheral_state{
     PERIPHERAL_ERROR
 };
 
-Peripheral_state Peripherals_state = PERIPHERAL_IDLE;
+//enum button_combinations
+//maybe just use a list
+enum Button_combinations{
+    UP_DOWN,
+    UP_RIGHT,
+    UP_LEFT,
+    DOWN_RIGHT,
+    DOWN_LEFT,
+    RIGHT_LEFT,
+    UP_DOWN_RIGHT,
+    UP_DOWN_LEFT,
+    UP_RIGHT_LEFT,
+    DOWN_RIGHT_LEFT,
+    UP_DOWN_RIGHT_LEFT,
+    BUTTON_NONE
+};
+
 
 #include <stdio.h>
 //#include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/adc.h"
+
 
 
 /* 
