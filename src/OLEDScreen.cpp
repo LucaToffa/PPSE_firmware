@@ -1,17 +1,10 @@
-#ifndef __OLED_SCREEN__
-#define __OLED_SCREEN__
+#include "OLEDScreen.h"
 
-#include "Defines.h"
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_SSD1306.h> 
-
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 MbedI2C myWire(SDA, SCL);  
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &myWire, OLED_RESET, 40000UL, 10000UL);
-#define NUMFLAKES     10 // Number of snowflakes in the animation example
 
-#define LOGO_HEIGHT   16
-#define LOGO_WIDTH    16
+
+
 static const unsigned char PROGMEM logo_bmp[] = { 
   0b00000000, 0b11000000,
   0b00000001, 0b11000000,
@@ -31,51 +24,7 @@ static const unsigned char PROGMEM logo_bmp[] = {
   0b00000000, 0b00110000 
 };
 
-typedef struct PAGES{
-    String Title;
-    String Lines[6];
-    String Change = " <-prev   next->";
-}PAGES;
 
-PAGES menu = {"Main Menu", {"1. Sensors", "2. Communication", "3. Settings", "4. Music", "5. Memory", "6. Demo"}};
-PAGES sensors ={ "Sensors", {"1. Accelerometer", "2. GPS", "3. Temperature", "4. Battery", "\n", "Exit"}};
-PAGES accelerometer = {"Accelerometer", {"1. Calibrate", "2. \n", "3. \n", "4. \n", "\n", "Exit"}};
-PAGES gps = {"GPS", {"1. \n", "2. \n", "3. \n", "4. \n", "\n", "Exit"}}; //add data to display in real time
-PAGES temperature = {"Temperature", {"1. \n", "2. \n", "3. \n", "4. \n", "\n", "Exit"}};
-PAGES battery = {"Battery", {"1. \n", "2. \n", "3. \n", "4. \n", "\n", "Exit"}};
-PAGES communication = {"Communication", {"1. Wifi", "2. USB", "3. Serial", "4. \n", "\n", "Exit"}};
-PAGES setting = {"Settings", {"\n", "\n", "\n", "\n", "\n", "Exit"}};
-PAGES music = {"Music", {"1. Track1", "2. Track2", "3. Track3", "Pause", "Stop", "Exit"}};
-PAGES memory = {"Memory", {"1. Save", "2. Load", "3. Delete", "4. Format", "\n", "Exit"}};
-PAGES demo = {"Demo", {"1. Screen", "2. Leds", "3. Buzzer", "4. WiFi", "", "Exit"}};
-PAGES pages[NUM_PAGES] = {
-menu, 
-sensors, accelerometer, gps, temperature, battery, 
-communication, 
-setting,
-music,
-memory,
-demo
-};
-
-void init_display();
-#define XPOS   0 // Indexes into the 'icons' array in function below
-#define YPOS   1
-#define DELTAY 2
-void testdrawline();
-void testdrawrect(void);
-void testfillrect(void);
-void testdrawcircle(void);
-void testfillcircle(void);
-void testdrawroundrect(void);
-void testfillroundrect(void);
-void testdrawtriangle(void);
-void testfilltriangle(void);
-void testdrawchar(void);
-void testdrawstyles(void);
-void testscrolltext(void);
-void testdrawbitmap(void);
-void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h);
 
 void init_display(){
     
@@ -101,18 +50,6 @@ void init_display(){
   display.display();
   delay(2000);
 }
-
-
-void change_page(){ //tbi this is just copilot
-    display.clearDisplay();
-    display.setTextSize(1);             // Normal 1:1 pixel scale
-    display.setTextColor(SSD1306_WHITE);        // Draw white text
-    display.setCursor(0,0);             // Start at top-left corner
-    display.println("Page 2");
-    display.display();
-    delay(2000);
-}
-
 
 void testdrawline() {
   int16_t i;
@@ -401,60 +338,3 @@ void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
     }
   }
 }
-
-
-//other test code
-// // Initialize the OLED display object with the specified width and height
-// Adafruit_SSD1306 display(128, 64, &Wire, -1);
-
-// // Define the figures to be displayed
-// const uint8_t figures[5][8] = {
-//     { 0x3E, 0x41, 0x41, 0x41, 0x3E, 0x00, 0x00, 0x00 },  // Square
-//     { 0x08, 0x1C, 0x2A, 0x08, 0x08, 0x08, 0x08, 0x00 },  // Arrow
-//     { 0x18, 0x24, 0x24, 0x18, 0x00, 0x00, 0x00, 0x00 },  // House
-//     { 0x1C, 0x22, 0x04, 0x08, 0x10, 0x22, 0x1C, 0x00 },  // Smiley face
-//     { 0x1C, 0x22, 0x22, 0x1C, 0x08, 0x14, 0x22, 0x00 }   // Diamond
-// };
-
-// void setup_oled();
-// void loop_oled();
-// // Define the current figure index
-// int currentFigure = 0;
-
-// void setup_oled() {
-//     // Initialize serial communication
-//     Serial.begin(9600);
-    
-//     // Start the I2C bus
-//     Wire.begin();
-
-//     // Initialize the OLED display
-//     if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
-//         Serial.println(F("SSD1306 allocation failed"));
-//         for (;;);
-//     }
-
-//     // Clear the screen and display the first figure
-//     display.clearDisplay();
-//     display.drawBitmap(0, 0, figures[currentFigure], 8, 8, WHITE);
-//     display.display();
-// }
-
-// void loop_oled() {
-//     // Wait for one second
-//     delay(1000);
-
-//     // Increment the current figure index and wrap around if necessary
-//     currentFigure++;
-//     if (currentFigure >= 5) {
-//         currentFigure = 0;
-//     }
-
-//     // Clear the screen and display the next figure
-//     display.clearDisplay();
-//     display.drawBitmap(0, 0, figures[currentFigure], 8, 8, WHITE);
-//     display.display();
-// }
-
-
-#endif

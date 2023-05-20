@@ -1,148 +1,160 @@
 #ifndef __ACCELEROMETER__
 #define __ACCELEROMETER__
 
-#include <Wire.h>
-#include "hardware/i2c.h"
 #include "Defines.h"
-//i2c_inst_t* i2c = i2c0;
+#include <Adafruit_MMA8451.h>
+#include <Adafruit_Sensor.h>
 
-// Define the I2C address of the MMA8451Q accelerometer
-#define MMA8451Q_ADDR   0x1D
+typedef struct {
+    int rawx;
+    int rawy;
+    int rawz;
+    float x;
+    float y;
+    float z;
+} accelerometer_data_t;
 
-// Define the addresses of the MMA8451Q registers
-#define MMA8451Q_CTRL_REG1      0x2A
-#define MMA8451Q_OUT_X_MSB      0x01
-#define MMA8451Q_OUT_Y_MSB      0x03
-#define MMA8451Q_OUT_Z_MSB      0x05
-
-// Initialize the I2C bus
-extern MbedI2C myWire;
-
-int16_t read16(uint8_t addr);
-//void setup_accelerometer();
-//void loop_accelerometer(); 
-
-
-// Define a function to read a 16-bit value from two consecutive registers
-int16_t read16(uint8_t addr) {
-    
-    myWire.beginTransmission(MMA8451Q_ADDR);
-    myWire.write(addr);
-    myWire.endTransmission(false);
-    myWire.requestFrom(MMA8451Q_ADDR, 2);
-    while (myWire.available() < 2);
-    uint8_t lsb = myWire.read();
-    uint8_t msb = myWire.read();
-    return (int16_t)((msb << 8) | lsb);
-}
-
-void setup_accelerometer() {
-    // Start the serial communication
-    //Serial.begin(9600);
-
-    // Start the I2C bus
-    //I2C.begin(SDA, SCL);
-
-    // Set the MMA8451Q to active mode
-    myWire.beginTransmission(MMA8451Q_ADDR);
-    myWire.write(MMA8451Q_CTRL_REG1);
-    myWire.write(0x01);
-    myWire.endTransmission();
-}
-
-void loop_accelerometer() {
-    Adafruit_NeoPixel pixels(STRIP_LENGHT, LED_STRIP, NEO_GRB + NEO_KHZ800); //strip file to control it
-    pixels.begin(); //initialize the strip
-    // Read the X, Y, and Z values from the MMA8451Q accelerometer
-    int16_t x = read16(MMA8451Q_OUT_X_MSB);
-    int16_t y = read16(MMA8451Q_OUT_Y_MSB);
-    int16_t z = read16(MMA8451Q_OUT_Z_MSB);
-
-    // Print the X, Y, and Z values on the serial monitor
-    Serial.print("X: ");
-    Serial.print(x);
-    Serial.print(", Y: ");
-    Serial.print(y);
-    Serial.print(", Z: ");
-    Serial.println(z);
-
-    pixels.clear();
-    pixels.setPixelColor(6, pixels.Color(20, 20,20));
-    if(x > 0){
-        pixels.setPixelColor(1, pixels.Color(0, 150, 0));
-        pixels.setPixelColor(2, pixels.Color(0, 150, 0));
-    } else {
-        pixels.setPixelColor(1, pixels.Color(0, 0, 150));
-        pixels.setPixelColor(2, pixels.Color(0, 0, 150));
-    }
-    if(y > 0){
-        pixels.setPixelColor(3, pixels.Color(0, 150, 0));
-        pixels.setPixelColor(4, pixels.Color(0, 150, 0));
-    } else {
-        pixels.setPixelColor(3, pixels.Color(0, 0, 150));
-        pixels.setPixelColor(4, pixels.Color(0, 0, 150));
-    }
-    if(z > 0){
-        pixels.setPixelColor(5, pixels.Color(0, 150, 0));
-        pixels.setPixelColor(6, pixels.Color(0, 150, 0));
-    } else {
-        pixels.setPixelColor(5, pixels.Color(0, 0, 150));
-        pixels.setPixelColor(6, pixels.Color(0, 0,150));
-    }
-    if(x == y && y == z){
-        //set all to zero
-        for(int i = 0; i < STRIP_LENGHT; i++){
-            pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-        }
-    }
-    pixels.show();
+//library not working with pico, doesnt even init the i2c successfully
+void setup_accelerometer();
+void raw_read_accelerometer();
+float read_accelerometer(int axis);
+void read_accelerometer();
+void setAccelLeds();
 
 
-    // Wait for 100 milliseconds
-    delay(100);
-}
+
+/* example, should test this as an alternative*/
+// /**
+//  * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+//  *
+//  * SPDX-License-Identifier: BSD-3-Clause
+//  */
+
+// #include <stdio.h>
+// #include <string.h>
+// #include "pico/stdlib.h"
+// #include "pico/binary_info.h"
+// #include "pico/stdio.h"
+// #include "hardware/i2c.h"
+
+// /* Example code to talk to a MMA8451 triple-axis accelerometer.
+   
+//    This reads and writes to registers on the board. 
+
+//    Connections on Raspberry Pi Pico board, other boards may vary.
+
+//    GPIO PICO_DEFAULT_I2C_SDA_PIN (On Pico this is GP4 (physical pin 6)) -> SDA on MMA8451 board
+//    GPIO PICO_DEFAULT_I2C_SCK_PIN (On Pico this is GP5 (physcial pin 7)) -> SCL on MMA8451 board
+//    VSYS (physical pin 39) -> VDD on MMA8451 board
+//    GND (physical pin 38)  -> GND on MMA8451 board
+
+// */
+
+// const uint8_t ADDRESS = 0x1D;
+
+// //hardware registers
+
+// const uint8_t REG_X_MSB = 0x01;
+// const uint8_t REG_X_LSB = 0x02;
+// const uint8_t REG_Y_MSB = 0x03;
+// const uint8_t REG_Y_LSB = 0x04;
+// const uint8_t REG_Z_MSB = 0x05;
+// const uint8_t REG_Z_LSB = 0x06;
+// const uint8_t REG_DATA_CFG = 0x0E;
+// const uint8_t REG_CTRL_REG1 = 0x2A;
+
+// // Set the range and precision for the data 
+// const uint8_t range_config = 0x01; // 0x00 for ±2g, 0x01 for ±4g, 0x02 for ±8g
+// const float count = 2048; // 4096 for ±2g, 2048 for ±4g, 1024 for ±8g
+
+// uint8_t buf[2];
+
+// float mma8451_convert_accel(uint16_t raw_accel) {
+//     float acceleration;
+//     // Acceleration is read as a multiple of g (gravitational acceleration on the Earth's surface)
+//     // Check if acceleration < 0 and convert to decimal accordingly
+//     if ((raw_accel & 0x2000) == 0x2000) {
+//         raw_accel &= 0x1FFF;
+//         acceleration = (-8192 + (float) raw_accel) / count;
+//     } else {
+//         acceleration = (float) raw_accel / count;
+//     }
+//     acceleration *= 9.81f;
+//     return acceleration;
+// }
+
+// #ifdef i2c_default
+// void mma8451_set_state(uint8_t state) {
+//     buf[0] = REG_CTRL_REG1;
+//     buf[1] = state; // Set RST bit to 1
+//     i2c_write_blocking(i2c_default, ADDRESS, buf, 2, false);
+// }
+// #endif
+
+// int main() {
+//     stdio_init_all();
+
+// #if !defined(i2c_default) || !defined(PICO_DEFAULT_I2C_SDA_PIN) || !defined(PICO_DEFAULT_I2C_SCL_PIN)
+// #warning i2c/mma8451_i2c example requires a board with I2C pins
+//     puts("Default I2C pins were not defined");
+// #else
+//     printf("Hello, MMA8451! Reading raw data from registers...\n");
+
+//     // This example will use I2C0 on the default SDA and SCL pins (4, 5 on a Pico)
+//     i2c_init(i2c_default, 400 * 1000);
+//     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+//     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+//     gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+//     gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+//     // Make the I2C pins available to picotool
+//     bi_decl(bi_2pins_with_func(PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C));
+
+//     float x_acceleration;
+//     float y_acceleration;
+//     float z_acceleration;
+
+//     // Enable standby mode
+//     mma8451_set_state(0x00);
+
+//     // Edit configuration while in standby mode
+//     buf[0] = REG_DATA_CFG;
+//     buf[1] = range_config;
+//     i2c_write_blocking(i2c_default, ADDRESS, buf, 2, false);
+
+//     // Enable active mode
+//     mma8451_set_state(0x01);
+
+//     while (1) {
+
+//         // Start reading acceleration registers for 2 bytes
+//         i2c_write_blocking(i2c_default, ADDRESS, &REG_X_MSB, 1, true);
+//         i2c_read_blocking(i2c_default, ADDRESS, buf, 2, false);
+//         x_acceleration = mma8451_convert_accel(buf[0] << 6 | buf[1] >> 2);
+
+//         i2c_write_blocking(i2c_default, ADDRESS, &REG_Y_MSB, 1, true);
+//         i2c_read_blocking(i2c_default, ADDRESS, buf, 2, false);
+//         y_acceleration = mma8451_convert_accel(buf[0] << 6 | buf[1] >> 2);
+
+//         i2c_write_blocking(i2c_default, ADDRESS, &REG_Z_MSB, 1, true);
+//         i2c_read_blocking(i2c_default, ADDRESS, buf, 2, false);
+//         z_acceleration = mma8451_convert_accel(buf[0] << 6 | buf[1] >> 2);
+
+//         // Display acceleration values 
+//         printf("ACCELERATION VALUES: \n");
+//         printf("X acceleration: %.6fms^-2\n", x_acceleration);
+//         printf("Y acceleration: %.6fms^-2\n", y_acceleration);
+//         printf("Z acceleration: %.6fms^-2\n", z_acceleration);
+
+//         sleep_ms(500);
+
+//         // Clear terminal 
+//         printf("\e[1;1H\e[2J");
+//     }
+
+// #endif
+// }
+
+
 #endif // __ACCELEROMETER__
 
 
-// #include <Wire.h>        /*include Wire.h library*/
-// void setup()
-// {
-//   Wire.begin();           /*Wire I2C communication START*/
-//   Serial.begin(9600);    /*baud rate set for Serial Communication*/
-//   while (!Serial);       /*Waiting for Serial output on Serial Monitor*/
-//   Serial.println("\nI2C Scanner");
-// }
-// void loop()
-// {
-//   byte err, adr;       /*variable error is defined with address of I2C*/
-//   int number_of_devices;
-//   Serial.println("Scanning.");
-//   number_of_devices = 0;
-//   for (adr = 1; adr < 127; adr++ )
-//   {
-//     Wire.beginTransmission(adr);
-//     err = Wire.endTransmission();
-
-//     if (err == 0)
-//     {
-//       Serial.print("I2C device at address 0x");
-//       if (adr < 16)
-//         Serial.print("0");
-//       Serial.print(adr, HEX);
-//       Serial.println("  !");
-//       number_of_devices++;
-//     }
-//     else if (err == 4)
-//     {
-//       Serial.print("Unknown error at address 0x");
-//       if (adr < 16)
-//         Serial.print("0");
-//       Serial.println(adr, HEX);
-//     }
-//   }
-//   if (number_of_devices == 0)
-//     Serial.println("No I2C devices attached\n");
-//   else
-//     Serial.println("done\n");
-//   delay(5000);             /*wait 5 seconds for the next I2C scan*/
-// }

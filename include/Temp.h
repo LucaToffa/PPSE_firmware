@@ -1,5 +1,5 @@
-// #ifndef __TEMP__
-// #define __TEMP__
+#ifndef __TEMP__
+#define __TEMP__
 
 // #include <Arduino.h>
 // #include <Wire.h>
@@ -52,4 +52,4 @@
 //   delay(1000);
 // }
 
-// #endif // __TEMP__
+#endif // __TEMP__

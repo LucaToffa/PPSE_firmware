@@ -49,21 +49,15 @@
 #define ACC_ADDRESS 0x00
 #define STRIP_LENGHT 8
 
-//add functin to scan i2c devices
-//INCLUDES
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_SSD1306.h> //find a way to make it work
-#include "OLED_screen.h"
-//#include "GPS.h"
-//#include "Accelerometer.h"
+// Define the I2C address of the MMA8451Q accelerometer
+#define MMA8451Q_ADDR   0x1C
 
-#include "Debounce.h"
-#include <ezBuzzer.h>
-#include "AT24C256.h"
-//#include <WiFi.h> //which library for wifi over uart?
+// Define the addresses of the MMA8451Q registers
+#define MMA8451Q_CTRL_REG1      0x2A
+#define MMA8451Q_OUT_X_MSB      0x01
+#define MMA8451Q_OUT_Y_MSB      0x03
+#define MMA8451Q_OUT_Z_MSB      0x05
 
-
-#include "buzzer.h"
 
 enum Peripheral_state{
     MAIN_MENU,
@@ -78,51 +72,5 @@ enum Peripheral_state{
     PERIPHERAL_IDLE,
     PERIPHERAL_ERROR
 };
-
-//enum button_combinations
-//maybe just use a list
-enum Button_combinations{
-    UP_DOWN,
-    UP_RIGHT,
-    UP_LEFT,
-    DOWN_RIGHT,
-    DOWN_LEFT,
-    RIGHT_LEFT,
-    UP_DOWN_RIGHT,
-    UP_DOWN_LEFT,
-    UP_RIGHT_LEFT,
-    DOWN_RIGHT_LEFT,
-    UP_DOWN_RIGHT_LEFT,
-    BUTTON_NONE
-};
-
-
-#include <stdio.h>
-//#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/adc.h"
-
-
-
-/* 
-int main() {
-    stdio_init_all();
-    printf("ADC Example, measuring GPIO26\n");
-
-    adc_init();
-
-    // Make sure GPIO is high-impedance, no pullups etc
-    adc_gpio_init(26);
-    // Select ADC input 0 (GPIO26)
-    adc_select_input(0);
-
-    while (1) {
-    // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
-    const float conversion_factor = 3.3f / (1 << 12);
-    uint16_t result = adc_read();
-    printf("Raw value: 0x%03x, voltage: %f V\n", result, result * conversion_factor);
-    sleep_ms(500);
-    }
-} */
 
 #endif
