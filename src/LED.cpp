@@ -18,7 +18,6 @@ void example_led_strip(){
   for(int i=0; i < STRIP_LENGHT; i++) {
     pixels.setPixelColor(i, pixels.Color(i*5, 0, 15));
     pixels.show();
-    //delay(500);
   }
 }
 

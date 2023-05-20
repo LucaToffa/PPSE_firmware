@@ -21,6 +21,7 @@ long unsigned int ledMillis = 0;
 extern Adafruit_NeoPixel pixels;
 extern Adafruit_SSD1306 display;
 extern const unsigned char PROGMEM logo_bmp[];
+extern long int last_press;
 // put function declarations here:
 void poll_i2c();
 void test_monitor();
@@ -39,12 +40,18 @@ void setup() {
   //init_display(); //could block code if display is not connected
   reset_led_strip();
   ledMillis = millis();
+  last_press = millis();
+  //test buzzer first -> not working on this board
+  loop_buzzer();
+  delay(1000);
+  STT_buzzer();
+  delay(1000);
   
 }
 
-int do_buzzer = 0;
-int do_alive = 0;
-int do_strip = 0;
+int do_buzzer = 1;
+int do_alive = 1;
+int do_strip = 1;
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -53,6 +60,8 @@ void loop() {
   }
   if(do_strip){
     example_led_strip();
+  }else{
+    reset_led_strip();
   }
   if(do_buzzer){
     loop_buzzer();
@@ -64,17 +73,21 @@ void loop() {
       do_alive = 0;
       do_strip = 0;
       do_buzzer = 0;
-      pixels.clear();
-      pixels.show();
+      reset_led_strip();
+      digitalWrite(LED_ALIVE, LOW);
+      Serial.println("up\n");
       break;
     case BUTTON_DOWN:
       do_buzzer = !do_buzzer;
+      Serial.println("down\n");
       break;
     case BUTTON_LEFT:
       do_alive = !do_alive;
+      Serial.println("left\n");
       break;
     case BUTTON_RIGHT: 
       do_strip = !do_strip;
+      Serial.println("right\n");
       break;
     default:
       //do nothing
