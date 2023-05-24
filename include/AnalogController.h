@@ -7,5 +7,6 @@
 void setup_temp();
 void loop_temp();
 void example_adc();
+void battery_read();
 #endif // __TEMP__
 

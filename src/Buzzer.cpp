@@ -95,7 +95,7 @@ void STT_buzzer() {
             noteDuration *= 1.5; // increases the duration in half for dotted notes
         }
         // we only play the note for 90% of the duration, leaving 10% as a pause
-        tone(BUZZER, (STTmelody[current_note] / 2), noteDuration*0.9);
+        tone(BUZZER, ((STTmelody[current_note] / 2)/ 2), noteDuration*0.9);
         current_note = current_note + 2;//increment by 2 to skip the duration
         if(current_note == notes*2){
             current_note = 0;

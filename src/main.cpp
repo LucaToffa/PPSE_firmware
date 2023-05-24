@@ -8,19 +8,23 @@
 #include <SPI.h>
 #include <Wire.h>
 
-
 #include "Defines.h"
 #include "OLEDScreen.h"
 #include "Buzzer.h"
 #include "Buttons.h"
 #include "LED.h"
 #include "Accelerometer.h"
+#include "AnalogController.h"
+#include "OLEDScreen.h"
+#include "WiFiModule.h"
+
 
 //variables
+String input = "";
+char input_char;
 long unsigned int ledMillis = 0;
 extern Adafruit_NeoPixel pixels;
 extern Adafruit_SSD1306 display;
-extern const unsigned char PROGMEM logo_bmp[];
 extern long int last_press;
 // put function declarations here:
 void poll_i2c();
@@ -32,29 +36,40 @@ void setup() {
   pinMode(LED_ALIVE, OUTPUT);
   digitalWrite(LED_ALIVE, HIGH);
   setup_buzzer();
-  Serial.begin(9600);
+  Serial.begin(115200);
   setup_led_strip();
   delay(2000);  //delay to allow for serial monitor to connect
   Serial.println("Hello World");
   //setup_accelerometer(); //not working
-  //init_display(); //could block code if display is not connected
+  init_display(); //could block code if display is not connected
   reset_led_strip();
   ledMillis = millis();
   last_press = millis();
   //test buzzer first -> not working on this board
-  loop_buzzer();
+  //STT_buzzer();
   delay(1000);
-  STT_buzzer();
-  delay(1000);
+  //battery_read();
+  //example_adc();
+  //example_oled();
+  setup_wifi(); //test wifi
   
 }
 
-int do_buzzer = 1;
+int do_buzzer = 0;
 int do_alive = 1;
-int do_strip = 1;
+int do_strip = 0;
+int do_print = 0;
 
 void loop() {
+  test_wifi();
   // put your main code here, to run repeatedly:
+  if(Serial.available()){
+    //input = Serial.readStringUntil('\n');
+    input_char = Serial.read();
+    input += input_char; //test this
+    Serial.println(input);
+  }
+
   if(do_alive){
     loop_alive(100);
   }
@@ -66,7 +81,9 @@ void loop() {
   if(do_buzzer){
     loop_buzzer();
   }
-  
+  if(do_print){
+    draw_line(input, 0);
+  }
   int pressed = read_buttons();
   switch(pressed){
     case BUTTON_UP:
@@ -75,19 +92,26 @@ void loop() {
       do_buzzer = 0;
       reset_led_strip();
       digitalWrite(LED_ALIVE, LOW);
+      display.clearDisplay();
+      display.display();
       Serial.println("up\n");
+      draw_line("up", 3, 2);
       break;
     case BUTTON_DOWN:
-      do_buzzer = !do_buzzer;
+      do_print = !do_print;
+      //do_buzzer = !do_buzzer;
       Serial.println("down\n");
+      draw_line("down", 3, 2);
       break;
     case BUTTON_LEFT:
       do_alive = !do_alive;
       Serial.println("left\n");
+      draw_line("left", 3, 2);
       break;
     case BUTTON_RIGHT: 
       do_strip = !do_strip;
       Serial.println("right\n");
+      draw_line("right", 3, 2);
       break;
     default:
       //do nothing

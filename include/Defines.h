@@ -37,8 +37,8 @@
 
 #define EN_5VOLT 11
 //ANALOG INPUTS (ADC)
-#define BATTERY_VOLTAGE 28
-#define TEMPERAURE 26
+#define BATTERY_VOLTAGE 28 //adc2
+#define TEMPERAURE 26 //adc0
 
 //constants
 #define SCREEN_WIDTH 128 // OLED display width, in pixels

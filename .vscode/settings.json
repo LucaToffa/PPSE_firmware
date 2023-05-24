@@ -3,6 +3,16 @@
     "workbench.editor.enablePreviewFromQuickOpen": true,
     "files.associations": {
         "defines.h": "c",
-        "*.x": "cpp"
+        "*.x": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "fstream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "*.impl": "cpp",
+        "exception": "cpp",
+        "iosfwd": "cpp",
+        "new": "cpp"
     }
 }

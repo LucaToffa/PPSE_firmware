@@ -2,28 +2,21 @@
 
 MbedI2C myWire(SDA, SCL);  
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &myWire, OLED_RESET, 40000UL, 10000UL);
+//Desired text size. 1 is default 6x8, 2 is 12x16, 3 is 18x24, etc
+//write and display are very slow, so only use when needed, never in a loop
 
-
-
-static const unsigned char PROGMEM logo_bmp[] = { 
-  0b00000000, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000011, 0b11100000,
-  0b11110011, 0b11100000,
-  0b11111110, 0b11111000,
-  0b01111110, 0b11111111,
-  0b00110011, 0b10011111,
-  0b00011111, 0b11111100,
-  0b00001101, 0b01110000,
-  0b00011011, 0b10100000,
-  0b00111111, 0b11100000,
-  0b00111111, 0b11110000,
-  0b01111100, 0b11110000,
-  0b01110000, 0b01110000,
-  0b00000000, 0b00110000 
-};
-
+//maximum char lenght is 21 at size 1, line_number 0 is the color bar
+//21*8 lines = 168 chars
+void draw_line(String line, int line_number, int size, int color){
+  display.clearDisplay();
+  display.setTextSize(size);                  // Normal 1:1 pixel scale
+  display.setTextColor(color);                // Draw white text
+  display.setCursor(0, line_number*8*size);      // Start at the beginning of the line
+  display.cp437(true);                        // Use full 256 char 'Code Page 437' font
+  display.write(line.c_str());
+  display.display();
+  //delay(2000);
+}
 
 
 void init_display(){
