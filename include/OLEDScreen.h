@@ -4,6 +4,7 @@
 #include "Defines.h"
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_SSD1306.h> 
+#include "FSM_screen.h"
 
 #define SSD1306_BLACK 0   ///< Draw 'off' pixels
 #define SSD1306_WHITE 1   ///< Draw 'on' pixels
@@ -18,28 +19,35 @@
 typedef struct PAGES{
     String Title;
     String Lines[6];
-    String Change = " <-prev   next->";
+    String Change = "<-prev         next->";
 }PAGES;
+
+void update_page(enum_state current_state);
+
+
+void draw_selection(enum_state state, int line = 1); //draws the selection arrow at the current position
+void draw_screen(enum_state state); //draws the entire page on screen
+void draw_YN(enum_state state, int line = 1); //changes a togglable selection
 
 void draw_line(String line, int line_number = 0, int size = 1, int color = SSD1306_WHITE);
 void init_display();
 #define XPOS   0 // Indexes into the 'icons' array in function below
 #define YPOS   1
 #define DELTAY 2
-void testdrawline();
-void testdrawrect(void);
-void testfillrect(void);
-void testdrawcircle(void);
-void testfillcircle(void);
-void testdrawroundrect(void);
-void testfillroundrect(void);
-void testdrawtriangle(void);
-void testfilltriangle(void);
-void testdrawchar(void);
-void testdrawstyles(void);
-void testscrolltext(void);
-void testdrawbitmap(void);
-void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h);
+// void testdrawline();
+// void testdrawrect(void);
+// void testfillrect(void);
+// void testdrawcircle(void);
+// void testfillcircle(void);
+// void testdrawroundrect(void);
+// void testfillroundrect(void);
+// void testdrawtriangle(void);
+// void testfilltriangle(void);
+// void testdrawchar(void);
+// void testdrawstyles(void);
+// void testscrolltext(void);
+// void testdrawbitmap(void);
+// void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h);
 
 static const unsigned char PROGMEM logo_bmp[] = { 
   0b00000000, 0b11000000,

@@ -102,7 +102,10 @@ void loop_buzzer();
 void setup_buzzer();
 
 void loop_buzzer();
+void press_toneUD();
+void press_toneLR();
 
-void STT_buzzer();
+void alarm_tone();
+//void STT_buzzer();
 
 #endif // __BUZZER__

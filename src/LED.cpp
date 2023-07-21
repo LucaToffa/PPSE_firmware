@@ -5,6 +5,7 @@ Adafruit_NeoPixel pixels(STRIP_LENGHT, LED_STRIP, NEO_GRB + NEO_KHZ800); //strip
 void setup_led_strip(){
   pixels.begin();
   pixels.setBrightness(50);
+  pixels.clear();
   pixels.show(); // Initialize all pixels to 'off'
 }
 
@@ -20,8 +21,17 @@ void example_led_strip(){
     pixels.show();
   }
 }
-
+void led_strip_set_all(int r, int g, int b){
+  for(int i=0; i < STRIP_LENGHT; i++) {
+    pixels.setPixelColor(i, pixels.Color(r, g, b));
+  }
+  pixels.show();
+}
 void led_strip_set_color(int led, int r, int g, int b){
   pixels.setPixelColor(led, pixels.Color(r, g, b));
   pixels.show();
 }
+
+/*
+various control functions for the led strip, depending on the state
+*/

@@ -1,11 +1,48 @@
 #ifndef __EEPROM_CONTROLLER__
 #define __EEPROM_CONTROLLER__
 
-/* example */
+// /* example */
 // #include <Arduino.h>
 // #include <Wire.h>
-// #include <extEEPROM.h>
+// #include <EEPROM.h>
+// #include <stdio.h>
+// #include "pico/stdlib.h"
+// #include "SPIFlash.h"
 
+// #include <stdio.h>
+// #include <stdlib.h>
+
+// #include "pico/stdlib.h"
+// #include "hardware/flash.h"
+
+// #define FLASH_TARGET_OFFSET (256 * 1024)
+
+// const uint8_t *flash_target_contents = (const uint8_t *) (XIP_BASE + FLASH_TARGET_OFFSET);
+
+// void setup()
+// {
+//     pinMode(LED_BUILTIN, OUTPUT);
+   
+//     uint8_t random_data[FLASH_PAGE_SIZE];
+//     for (int i = 0; i < FLASH_PAGE_SIZE; ++i)
+//         random_data[i] = rand() >> 16;
+
+//     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
+//     flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
+
+//     bool mismatch = false;
+//     for (int i = 0; i < FLASH_PAGE_SIZE; i++) {
+//         if (random_data[i] != flash_target_contents[i])
+//             mismatch = true;
+//     }
+
+//     if (mismatch) digitalWrite(LED_BUILTIN, LOW);
+//     else   digitalWrite(LED_BUILTIN, HIGH);
+
+// }
+
+// void loop(){
+// }
 // // Define the I2C address of the EEPROM
 // //512 pages of 64 bytes each
 // #define EEPROM_ADDRESS 0x50

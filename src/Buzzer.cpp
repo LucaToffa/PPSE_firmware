@@ -2,6 +2,9 @@
 #include <Arduino.h>
 //#include "StarWarsTheme.h"
 
+extern bool selection_datasave[3]; //local wifi usb 
+extern bool selection_sensors[3]; //gps acc temp
+extern bool selection_others[3]; //wifi buzz leds
 
 // Define the duration of each note
 const int QUARTER_NOTE = 500;
@@ -17,37 +20,39 @@ int wholenote = (60000 * 4) / tempo;
 
 int divider = 0, noteDuration = 0;
 
+int alarm_notes[] = {749, 894, 662};
+
 // notes of the moledy followed by the duration.
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
 // !!negative numbers are used to represent dotted notes,
 // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-int STTmelody[] = {
+// int STTmelody[] = {
   
-  // Dart Vader theme (Imperial March) - Star wars 
-  // Score available at https://musescore.com/user/202909/scores/1141521
-  // The tenor saxophone part was used
+//   // Dart Vader theme (Imperial March) - Star wars 
+//   // Score available at https://musescore.com/user/202909/scores/1141521
+//   // The tenor saxophone part was used
   
-  NOTE_AS4,8, NOTE_AS4,8, NOTE_AS4,8,//1
-  NOTE_F5,2, NOTE_C6,2,
-  NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
-  NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
-  NOTE_AS5,8, NOTE_A5,8, NOTE_AS5,8, NOTE_G5,2, NOTE_C5,8, NOTE_C5,8, NOTE_C5,8,
-  NOTE_F5,2, NOTE_C6,2,
-  NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
+//   NOTE_AS4,8, NOTE_AS4,8, NOTE_AS4,8,//1
+//   NOTE_F5,2, NOTE_C6,2,
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_AS5,8, NOTE_G5,2, NOTE_C5,8, NOTE_C5,8, NOTE_C5,8,
+//   NOTE_F5,2, NOTE_C6,2,
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4,  
   
-  NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4, //8  
-  NOTE_AS5,8, NOTE_A5,8, NOTE_AS5,8, NOTE_G5,2, NOTE_C5,-8, NOTE_C5,16, 
-  NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
-  NOTE_F5,8, NOTE_G5,8, NOTE_A5,8, NOTE_G5,4, NOTE_D5,8, NOTE_E5,4,NOTE_C5,-8, NOTE_C5,16,
-  NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F6,2, NOTE_C6,4, //8  
+//   NOTE_AS5,8, NOTE_A5,8, NOTE_AS5,8, NOTE_G5,2, NOTE_C5,-8, NOTE_C5,16, 
+//   NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+//   NOTE_F5,8, NOTE_G5,8, NOTE_A5,8, NOTE_G5,4, NOTE_D5,8, NOTE_E5,4,NOTE_C5,-8, NOTE_C5,16,
+//   NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
   
-  NOTE_C6,-8, NOTE_G5,16, NOTE_G5,2, REST,8, NOTE_C5,8,//13
-  NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
-  NOTE_F5,8, NOTE_G5,8, NOTE_A5,8, NOTE_G5,4, NOTE_D5,8, NOTE_E5,4,NOTE_C6,-8, NOTE_C6,16,
-  NOTE_F6,4, NOTE_DS6,8, NOTE_CS6,4, NOTE_C6,8, NOTE_AS5,4, NOTE_GS5,8, NOTE_G5,4, NOTE_F5,8,
-  NOTE_C6,1
+//   NOTE_C6,-8, NOTE_G5,16, NOTE_G5,2, REST,8, NOTE_C5,8,//13
+//   NOTE_D5,-4, NOTE_D5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+//   NOTE_F5,8, NOTE_G5,8, NOTE_A5,8, NOTE_G5,4, NOTE_D5,8, NOTE_E5,4,NOTE_C6,-8, NOTE_C6,16,
+//   NOTE_F6,4, NOTE_DS6,8, NOTE_CS6,4, NOTE_C6,8, NOTE_AS5,4, NOTE_GS5,8, NOTE_G5,4, NOTE_F5,8,
+//   NOTE_C6,1
   
-};
+// };
 
 // Define the melody as an array of notes
 const int Basemelody[] = {
@@ -60,7 +65,7 @@ void setup_buzzer() {
     // Set the buzzer pin as an output
     pinMode(BUZZER, OUTPUT);
     currentMillis = millis();
-    notes = sizeof(STTmelody) / sizeof(STTmelody[0]) / 2;
+    //notes = sizeof(STTmelody) / sizeof(STTmelody[0]) / 2;
 }
 
 void loop_buzzer() {
@@ -77,29 +82,52 @@ void loop_buzzer() {
 
 }
 
+//tone for button presses
+void press_toneUD(){
+  if(selection_others[1]) tone(BUZZER, NOTE_D5, 100);
+}
 
-void STT_buzzer() {
-    // Play the melody
-    static int current_note = 0; // Keep track of the note
-    if(millis() - currentMillis >= noteDuration) {
-        currentMillis = millis();
+void press_toneLR(){
+  if(selection_others[1]) tone(BUZZER, NOTE_A4, 100);
+}
 
-        // calculates the duration of each note
-        divider = STTmelody[current_note + 1];
-        if (divider > 0) {
-            // regular note, just proceed
-            noteDuration = (wholenote) / divider;
-        } else if (divider < 0) {
-            // dotted notes are represented with negative durations!!
-            noteDuration = (wholenote) / abs(divider);
-            noteDuration *= 1.5; // increases the duration in half for dotted notes
-        }
-        // we only play the note for 90% of the duration, leaving 10% as a pause
-        tone(BUZZER, ((STTmelody[current_note] / 2)/ 2), noteDuration*0.9);
-        current_note = current_note + 2;//increment by 2 to skip the duration
-        if(current_note == notes*2){
-            current_note = 0;
-        }
-    }
+void alarm_tone() {
+	if(selection_others[2]){
+		for (int i = 0; i < 3; i++) {
+			tone(BUZZER, alarm_notes[i], 380); // Emit the ith note in the notes array for noteLength milliseconds
+			delay(400); // Wait for noteLength milliseconds before emitting the next note
+		}
+	}
 
 }
+
+// void STT_buzzer() {
+//     // Play the melody
+//     static int current_note = 0; // Keep track of the note
+//     if(millis() - currentMillis >= noteDuration) {
+//         currentMillis = millis();
+
+//         // calculates the duration of each note
+//         divider = STTmelody[current_note + 1];
+//         if (divider > 0) {
+//             // regular note, just proceed
+//             noteDuration = (wholenote) / divider;
+//         } else if (divider < 0) {
+//             // dotted notes are represented with negative durations!!
+//             noteDuration = (wholenote) / abs(divider);
+//             noteDuration *= 1.5; // increases the duration in half for dotted notes
+//         }
+//         // we only play the note for 90% of the duration, leaving 10% as a pause
+//         tone(BUZZER, ((STTmelody[current_note] / 2)/ 2), noteDuration*0.9);
+//         current_note = current_note + 2;//increment by 2 to skip the duration
+//         if(current_note == notes*2){
+//             current_note = 0;
+//         }
+//     }
+
+// }
+
+/*
+What kind of sounds can we make with the buzzer?
+-> short sequenses of notes for each action
+*/
