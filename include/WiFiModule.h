@@ -40,10 +40,10 @@
 #define AT_CIPCLOSE "AT+CIPCLOSE=0"
 
 void setup_wifi();
-void test_wifi();
 String Send_AT_Cmd(String command, const int timeout, boolean debug);
-
-
+void setup_wifi_server();
+void test_wifi_server();
+void read_wifi_server();
   
 
 #endif  //__WIFIMODULE__

@@ -3,8 +3,6 @@
 
 #include <Arduino.h>
 #include "Defines.h"
-//#include <Adafruit_MMA8451.h>
-//#include <Adafruit_Sensor.h>
 
 typedef enum {
   MMA8451_RANGE_8_G = 2, // +/- 8g
@@ -26,15 +24,11 @@ void setRange(int range);
 void setActivityState(int state);
 int getRange();
 void setup_accelerometer();
-//String read_orientation();
 void raw_read_accelerometer();
 float read_accelerometer(int axis);
 void read_accelerometer();
 void setAccelLeds();
 void stop_accelerometer();
-
-void example_run();
-void test_read_acc();
 
 
 #endif // __ACCELEROMETER__

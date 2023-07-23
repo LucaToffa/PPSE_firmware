@@ -52,6 +52,9 @@
 #define ACC_ADDRESS 0x00
 #define STRIP_LENGHT 8
 
+#define TIME_SAVINGS 1
+#define TIME_ZONE 1
+
 // Define the I2C address of the MMA8451Q accelerometer
 #define MMA8451Q_ADDR   0x1C
 
@@ -106,27 +109,7 @@ typedef struct Data_storage{
     float accz;
 }Data_storage;
 
-typedef struct All_data{
-
-    String latitude = "0.0";
-    String longitude = "0.0";
-    String altitude = "0.0";
-    String speed = "0.0";
-    String numSatellites = "0";
-    String year = "2000";
-    String month = "1";
-    String day = "1";
-    String hour = "0";
-    String minute = "0";
-    String second = "0";
-
-    String temp = "0.0";
-
-    String accx = "0.0";
-    String accy = "0.0";
-    String accz = "0.0";
-}All_data;
-
 #define READING_TIME 5000 //time between reads of the sensors
 #define FAST_SPEED 10 //speed up sensor that need frequent update
+#define WRITING_TIME 5000 //time between writes of the sensors
 #endif

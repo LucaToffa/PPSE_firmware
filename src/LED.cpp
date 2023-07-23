@@ -1,6 +1,6 @@
 #include "LED.h"
 
-Adafruit_NeoPixel pixels(STRIP_LENGHT, LED_STRIP, NEO_GRB + NEO_KHZ800); //strip file to control it
+Adafruit_NeoPixel pixels(STRIP_LENGHT, LED_STRIP, NEO_GRB + NEO_KHZ800);
 
 void setup_led_strip(){
   pixels.begin();
@@ -31,7 +31,3 @@ void led_strip_set_color(int led, int r, int g, int b){
   pixels.setPixelColor(led, pixels.Color(r, g, b));
   pixels.show();
 }
-
-/*
-various control functions for the led strip, depending on the state
-*/

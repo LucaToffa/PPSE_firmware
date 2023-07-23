@@ -12,9 +12,7 @@
 // void setup_buttons();
 void init_buttons(); //setup buttons and interrupts
 int raw_read_buttons();
-int read_buttons();
 void set_button_states(bool up, bool down, bool right, bool left);
-bool get_button_states(int button);
 void reset_buttons(); //reset the list of buttons pressed after use
 void button_interrupt(); //function to call when button interrupt hits, sets the list of buttons pressed
 

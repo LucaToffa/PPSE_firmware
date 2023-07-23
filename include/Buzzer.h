@@ -106,6 +106,5 @@ void press_toneUD();
 void press_toneLR();
 
 void alarm_tone();
-//void STT_buzzer();
 
 #endif // __BUZZER__
