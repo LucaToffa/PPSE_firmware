@@ -141,9 +141,7 @@ void parseGpsData() {
       myGPS.month = ((date) / 100) % 100;
       myGPS.year = date % 100; 
     }
-    
 
-		
   }
   else{
     //Serial.println("Unknown Nmea");

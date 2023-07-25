@@ -9,7 +9,6 @@
 #define BUTTON_RIGHT_Idx 2
 #define BUTTON_LEFT_Idx 3
 
-// void setup_buttons();
 void init_buttons(); //setup buttons and interrupts
 int raw_read_buttons();
 void set_button_states(bool up, bool down, bool right, bool left);

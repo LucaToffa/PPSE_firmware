@@ -3,7 +3,6 @@
 
 #include "Defines.h"
 
-
 void setup_temp();
 float read_temp();
 void example_adc();

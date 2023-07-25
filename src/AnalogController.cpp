@@ -19,7 +19,7 @@ void example_adc(){
     uint16_t result = analogRead(TEMPERAURE);//adc_read();
     Serial.print("Raw value: ");
     Serial.print(result, HEX);
-    Serial.print(" voltage: ");
+    Serial.print(" Decimal: ");
     Serial.println((result * conversion_factor - 0,5)/0,01);
     sleep_ms(500);
   }
